@@ -12,9 +12,12 @@ import SaveIcon from '@material-ui/icons/Save';
 import { Check, Close, KeyboardReturn } from '@material-ui/icons';
 import { useSelector, useDispatch } from 'react-redux';
 import { editableItemAction } from '../../actions/itemsActions';
+import { useFetchUpdateItem } from '../../hooks/useFetchUpdateItem';
+import { updateItemFunction } from '../../functions/updateItemFunction';
 
-export const ItemDialogForm = ( ) => {
+export const ItemDialogForm = ({ onClose }) => {
 
+    const [edited, setEdited] = useState(false);
     const [item, setItem] = useState({
         id : '',
         code : '',
@@ -27,43 +30,35 @@ export const ItemDialogForm = ( ) => {
         creator : ''
       });
     
-    
-    // useEffect( () => {
-    //     console.log(' ');
-    // //     // setItem({ 
-    // //     //     ...item, 
-    // //     //     activeItem
-    // //     // })
-    //  }, [])
-
 
     const handleChange = ({ target }) => {
-        debugger;
-        // setItem({
-        //      ...storedItem,
-        //      [target.name]: target.value 
-        //     });
-        // dispatch(editableItemAction(storedItem));
-        
         dispatch(editableItemAction({
+            ...storedItem,
             [target.name]: target.value
         }));
 
     };
 
+    const handleCloseDialog = () => {
+        onClose();
+    };
+
+    const handleSaveItem = () => {
+        (updateItemFunction(storedItem))? alert('Guardado'): alert('No guardado ');
+        onClose();
+    };
+
+
     const storedItem = useSelector(state => state.items.activeItem);
     
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     setItem({ ...item, storedItem});
-    //  }, [])
-
+    // const saveItem = useFetchUpdateItem(storedItem, edited);
 
       return (
         <>
             <div className="formDialogItem">
-                <form>
+                <form >
                     <Grid 
                         container 
                         justify="space-between"
@@ -172,6 +167,7 @@ export const ItemDialogForm = ( ) => {
                             variant="contained"
                             color="secondary"
                             startIcon={<SaveIcon />}
+                            onMouseDown= {handleCloseDialog}
                         >
                             Cancel
                         </Button>
@@ -180,6 +176,7 @@ export const ItemDialogForm = ( ) => {
                         <Button className="formItem"
                             variant="contained"
                             color="primary"
+                            onMouseDown = {handleSaveItem}
                             startIcon={<SaveIcon />}
                             >
                             Save

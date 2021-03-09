@@ -20,5 +20,5 @@ export const useFetchItems = () => {
                 }
             );
     }, [])
-    return state; //{ data: [], loading: true }
+    return state;
 }

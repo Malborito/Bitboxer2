@@ -29,12 +29,13 @@ export default function ItemDialog(props) {
         <MuiDialogTitle  id="editItemDialog">
           Edit Item
           
-            <IconButton className="closeButtonDialog" aria-label="delete">
+            <IconButton className="closeButtonDialog" aria-label="delete" onMouseDown= {handleClose}>
               <Close />
             </IconButton>
         </MuiDialogTitle>
   
-        <ItemDialogForm />
+        <ItemDialogForm onClose={handleClose}/>
+        {/* <ItemDialogForm /> */}
       </Dialog>
     );
 

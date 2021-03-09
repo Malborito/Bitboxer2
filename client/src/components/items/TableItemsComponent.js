@@ -16,11 +16,13 @@ const handleMouseDownEditItem = (value, tableMeta, onOpen, data, dispatch) => {
   onOpen();
 };
 
-const handleMouseDownDeleteItem = (e) => {
-  console.log('Lanzar Dialog Delete');
+const handleMouseDownDeleteItem = (value, tableMeta, props, data) => {
+  console.log('Id para borrar: ' + data.find(item => item.code == value).id);
+  props.setSelectedValue(data.find(item => item.code == value).id);
+  props.onDelete();
 };
 
-const columns = (onOpen, data, dispatch) => {
+const columns = (props, data, dispatch) => {
 
   return (
     [
@@ -39,7 +41,7 @@ const columns = (onOpen, data, dispatch) => {
         filter: false,  sort: false,
         customBodyRender: (value, tableMeta) => {
             return (
-              <IconButton onMouseDown={()=>handleMouseDownEditItem(value, tableMeta, onOpen, data, dispatch)}>
+              <IconButton color="primary" onMouseDown={()=>handleMouseDownEditItem(value, tableMeta, props.onOpen, data, dispatch)}>
                 <Edit />
               </IconButton>
               );
@@ -47,12 +49,12 @@ const columns = (onOpen, data, dispatch) => {
       }
     },
     {
-      name: '', label: '', display: 'excluded',
+      name: 'code', label: '', display: 'excluded',
       options: {
         filter: false,  sort: false,
         customBodyRender: (value, tableMeta, updateValue) => {
             return (
-              <IconButton onMouseDown={handleMouseDownDeleteItem}>
+              <IconButton color="secondary" onMouseDown={()=>handleMouseDownDeleteItem(value, tableMeta, props, data)} >
                 <DeleteOutline />
               </IconButton>
               );
@@ -63,10 +65,6 @@ const columns = (onOpen, data, dispatch) => {
   );
 }
 
-
-const handleItemSelected = (e) => {
-  console.log(e);
-}
 
 const tableItemsOptions = {
   selectableRowsHeader: false,
@@ -80,16 +78,14 @@ const tableItemsOptions = {
 export default function TableItemsComponent(props) {
 
   const { data , loading } = useFetchItems();   
-  // const dispatch = useDispatch();
   const dispatch = useDispatch();
-  // dispatch( itemsActions(data))
 
   return (
     <>
     { loading && <p className="animate__flash-2s">Cargando... </p>}
 
     <MUIDataTable
-        title={"Product List"} data={data} columns={columns(props.onOpen, data, dispatch)} options={tableItemsOptions}
+        title={"Product List"} data={data} columns={columns(props, data, dispatch)} options={tableItemsOptions}
       />
     </>
   );
